@@ -11,6 +11,7 @@
   },
   "watch": [
     "app.js",
+    "db/**",
     "api/**",
     "index.js"
   ],
