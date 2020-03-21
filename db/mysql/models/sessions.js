@@ -26,5 +26,9 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
 
+  Session.associate = (models) => {
+    Session.belongsTo(models.User, { constraints: false });
+  };
+
   return Session;
 };

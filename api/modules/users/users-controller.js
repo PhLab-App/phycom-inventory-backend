@@ -1,5 +1,6 @@
 const AuthenticationService = require("../authentication/authentication-service");
 const UsersService = require("./users-service");
+const SessionsController = require("../sessions/sessions-controller");
 
 /**
  * @param {object} payloadData
@@ -40,6 +41,7 @@ async function register(payloadData, userData) {
  */
 async function login(payloadData) {
   try {
+    // Find user
     const user = await UsersService.getUserByEmail(payloadData.email);
     if (!user) {
       return Promise.reject({
@@ -55,9 +57,17 @@ async function login(payloadData) {
         message: "Passwords don't match",
       });
     }
-
-    const token = AuthenticationService.createToken(user.id, user.email);
-
+    // Create session
+    const sessionData = {
+      ip: payloadData.ip,
+      userID: user.id,
+      user,
+    };
+    let session = await SessionsController.sessionManager(sessionData);
+    session = session.get({ plain: true });
+    // Create token
+    const token = AuthenticationService.createToken(user.id, user.email, data.roleId, session.id);
+    // Parse data
     data.token = token;
     delete data.password;
     delete data.createdAt;
@@ -71,7 +81,23 @@ async function login(payloadData) {
   }
 }
 
+/**
+ * Deletes the user's session
+ * @param {object} userData
+ * @param {number} userData.sessionID
+ */
+async function logout(userData) {
+  try {
+    await SessionsController.expireSession(userData);
+    return true;
+  } catch (error) {
+    global.winstonLogger.error(error);
+    return error;
+  }
+}
+
 module.exports = {
   register,
   login,
+  logout,
 };

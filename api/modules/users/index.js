@@ -11,4 +11,15 @@ module.exports = (app, responses) => {
         return responses.error(res, error.status, error.message);
       }
     });
+  
+  app.route("/logout")
+    .post(async (req, res) => {
+      try {
+        const user = await UsersController.logout(req.userData);
+        return responses.success(res, null, null, user);
+      } catch (error) {
+        global.winstonLogger.error(error);
+        return responses.error(res, error.status, error.message);
+      }
+    });
 };

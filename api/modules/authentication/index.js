@@ -4,6 +4,7 @@ module.exports = (app, responses) => {
   app.route("/login")
     .post(async (req, res) => {
       try {
+        req.body.ip = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
         const user = await UsersController.login(req.body);
         return responses.success(res, null, null, user);
       } catch (error) {

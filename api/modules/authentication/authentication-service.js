@@ -28,13 +28,15 @@ async function comparePassword(passwordDB, passwordEntered) {
   * @param {Number} id
   * @param {String} email
   * @param {String} rol
+  * @param {number} sessionID
   * @return {String}
   */
-function createToken(id, email, rol) {
+function createToken(id, email, rol, sessionID) {
   const payload = {
-    id: id,
-    email: email,
-    rol: rol
+    id,
+    email,
+    rol,
+    sessionID,
   };
   return jwt.sign(payload, SECRET);
 }
