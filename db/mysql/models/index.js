@@ -8,6 +8,13 @@ const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || "development";
 const config = require(__dirname + "/../config.js")[env];
 
+const Op = Sequelize.Op;
+const operatorsAliases = {
+  $or: Op.or,
+  $and: Op.and,
+  $like: Op.like,
+};
+config.operatorsAliases = operatorsAliases;
 /** Object containing the database models */
 const db = {};
 
@@ -48,10 +55,11 @@ const connect = () => {
     sequelize
       .sync()
       .then(() => {
+        winstonLogger.info("Database connected");
         return resolve(db);
       })
       .catch((err) => {
-        console.log("Unable to connect to database:", err);
+        winstonLogger.error(`Unable to connect to database: ${JSON.stringify(err)}`);
         return reject(err);
       });
   });
@@ -60,6 +68,7 @@ const connect = () => {
 /** Close connection to database */
 const disconnect = () => {
   return new Promise(function(resolve) {
+    winstonLogger.info("Database disconnected");
     resolve(sequelize.close());
   });
 };

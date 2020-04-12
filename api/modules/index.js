@@ -18,5 +18,6 @@ app.use(async (req, res, next) => {
 });
 
 require("./users")(app, responses);
+require("./items")(app, responses);
 
 module.exports = app;
