@@ -47,7 +47,7 @@ async function getItems(queryData) {
   }
 
   const promises = await Promise.all([
-    MysqlService.getData("Item", query, [], options),
+    MysqlService.getData("Item", query, null, options),
     MysqlService.countData("Item", query),
   ]);
   const data = promises[0];

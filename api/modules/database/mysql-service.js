@@ -127,7 +127,7 @@ async function getFirstMatchPopulate(modelName, query, attributes, populate) {
       model: databases.Mysql.db[populate.modelName],
       attributes: populate.attributes,
     }],
-  })
+  });
 }
 
 module.exports = {

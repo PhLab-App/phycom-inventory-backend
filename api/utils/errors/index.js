@@ -23,7 +23,7 @@ const sequelizeErrorHandler = error => {
     console.error(error);
     throw new DatabaseError(error.message, "DatabaseError", 400);
   }
-}
+};
 
 /** Returns the first error message sent by Sequelize */
 const parseSequelizeError = error => {
