@@ -3,4 +3,5 @@ module.exports = {
   INCORRECT_PASSWORD: "Passwords don't match",
   USER_ALREADY_EXISTS: "User already exists",
   ITEM_NOT_FOUND: "Item not found",
+  SESSION_EXPIRED: "Session expired",
 };

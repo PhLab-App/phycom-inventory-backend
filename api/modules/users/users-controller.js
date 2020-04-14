@@ -96,8 +96,39 @@ async function logout(userData) {
   return true;
 }
 
+/**
+ * Return data from the user logged in
+ * @param {object} userData
+ * @param {number} userData.id
+ */
+async function getUserData(userData) {
+  // Check if session exists
+  const sessionQuery = { userID: userData.id };
+  const session = await SessionsController.getSession(sessionQuery);
+  if (!session) {
+    return Promise.reject({
+      status: 404,
+      message: global.messages.SESSION_EXPIRED,
+    });
+  }
+  // Get user details
+  const userQuery = { id: userData.id };
+  const userAttributes = ["name", "lastName", "email", "status"];
+  const populate = { modelName: "Role", attributes: ["name"] };
+  const user = await MysqlService.getFirstMatchPopulate("User", userQuery, userAttributes, populate);
+  if (!user) {
+    return Promise.reject({
+      status: 404,
+      message: global.messages.USER_NOT_FOUND,
+    });
+  }
+  // Parse user data
+  return user;
+}
+
 module.exports = {
   register,
   login,
   logout,
+  getUserData,
 };

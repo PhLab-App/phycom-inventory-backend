@@ -20,4 +20,14 @@ module.exports = (app, responses) => {
         next(error);
       }
     });
+
+  app.route("/users/getUserData")
+    .get(async(req, res, next) => {
+      try {
+        const user = await UsersController.getUserData(req.userData);
+        return responses.success(res, null, null, user);
+      } catch (error) {
+        next(error);
+      }
+    });
 };

@@ -31,7 +31,7 @@ async function getData(modelName, query, attributes, options) {
   return databases.Mysql.db[modelName].findAll({
     where: query,
     order,
-    // attributes,
+    attributes,
     offset: Number(options.skip),
     limit: Number(options.limit),
   })
@@ -52,7 +52,7 @@ async function getData(modelName, query, attributes, options) {
 async function getFirstMatch(modelName, query, attributes) {
   return databases.Mysql.db[modelName].findOne({
     where: query,
-    // attributes,
+    attributes,
   })
     .then(result => {
       return result;
@@ -110,6 +110,26 @@ async function deleteData(modelName, query) {
     });
 }
 
+/**
+ * 
+ * @param {string} modelName Name of the sequelize model
+ * @param {object} query
+ * @param {string[]} attributes
+ * @param {object} populate
+ * @param {string} populate.modelName
+ * @param {string[]} populate.attributes
+ */
+async function getFirstMatchPopulate(modelName, query, attributes, populate) {
+  return databases.Mysql.db[modelName].findOne({
+    where: query,
+    attributes,
+    include: [{
+      model: databases.Mysql.db[populate.modelName],
+      attributes: populate.attributes,
+    }],
+  })
+}
+
 module.exports = {
   createData,
   getData,
@@ -117,4 +137,5 @@ module.exports = {
   updateData,
   getFirstMatch,
   deleteData,
+  getFirstMatchPopulate,
 };

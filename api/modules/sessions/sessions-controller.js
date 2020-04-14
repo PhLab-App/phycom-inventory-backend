@@ -28,7 +28,17 @@ async function expireSession(payloadData) {
   return MysqlService.deleteData("Session", query);
 }
 
+/**
+ * @param {object} payloadData
+ * @param {number} payloadData.userID
+ */
+async function getSession(payloadData) {
+  const query = { user_id: payloadData.userID };
+  return MysqlService.getFirstMatch("Session", query, null);
+}
+
 module.exports = {
   sessionManager,
   expireSession,
+  getSession,
 };
