@@ -1,4 +1,5 @@
 const itemModel = "Item";
+const errorService = require("../../utils/errors/index");
 
 /**
  * Create the register of an item in the database
@@ -13,7 +14,13 @@ const itemModel = "Item";
  * @param {string} payloadData.userEmail
  */
 async function createItem(payloadData) {
-  return global.databases.Mysql.db[itemModel].create(payloadData);
+  return global.databases.Mysql.db[itemModel].create(payloadData)
+    .then(result => {
+      return result;
+    })
+    .catch(error => {
+      return errorService.sequelizeErrorHandler(error);
+    });
 }
 
 /**
@@ -33,7 +40,13 @@ async function getItems(query, attributes, options) {
     // attributes,
     offset: Number(options.skip),
     limit: Number(options.limit),
-  });
+  })
+    .then(result => {
+      return result;
+    })
+    .catch(error => {
+      return errorService.sequelizeErrorHandler(error);
+    });
 }
 
 /**
@@ -41,7 +54,13 @@ async function getItems(query, attributes, options) {
  * @param {object} query
  */
 async function countItems(query) {
-  return global.databases.Mysql.db[itemModel].count({ where: query });
+  return global.databases.Mysql.db[itemModel].count({ where: query })
+    .then(result => {
+      return result;
+    })
+    .catch(error => {
+      return errorService.sequelizeErrorHandler(error);
+    });
 }
 
 async function updateItem(query, update) {
@@ -49,7 +68,13 @@ async function updateItem(query, update) {
     where: query,
   });
   if (item) {
-    return item.update(update);
+    return item.update(update)
+      .then(result => {
+        return result;
+      })
+      .catch(error => {
+        return errorService.sequelizeErrorHandler(error);
+      });
   } else {
     return null;
   }

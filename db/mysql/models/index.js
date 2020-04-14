@@ -1,5 +1,3 @@
-"use strict";
-
 const fs = require("fs");
 const path = require("path");
 const Sequelize = require("sequelize");
@@ -8,6 +6,10 @@ const basename = path.basename(__filename);
 const env = process.env.NODE_ENV || "development";
 const config = require(__dirname + "/../config.js")[env];
 
+/** Object containing the database models */
+const db = {};
+
+// Initialize sequelize instance
 const Op = Sequelize.Op;
 const operatorsAliases = {
   $or: Op.or,
@@ -15,10 +17,6 @@ const operatorsAliases = {
   $like: Op.like,
 };
 config.operatorsAliases = operatorsAliases;
-/** Object containing the database models */
-const db = {};
-
-// Initialize sequelize instance
 let sequelize;
 if (config.use_env_variable) {
   sequelize = new Sequelize(process.env[config.use_env_variable], config);

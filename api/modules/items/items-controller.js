@@ -62,7 +62,7 @@ async function updateItem(payloadData) {
   if (!result) {
     return Promise.reject({
       status: 404,
-      message: "Item not found",
+      message: global.messages.ITEM_NOT_FOUND,
     });
   }
   return result;
