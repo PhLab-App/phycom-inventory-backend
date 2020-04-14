@@ -1,4 +1,4 @@
-const ItemsService = require("./items-service");
+const MysqlService = require("../database/mysql-service");
 
 /**
  * Creates an item in the database
@@ -14,7 +14,7 @@ const ItemsService = require("./items-service");
  */
 async function createItem(payloadData, userData) {
   payloadData.registered_by = userData.id;
-  return ItemsService.createItem(payloadData);
+  return MysqlService.createData("Item", payloadData);
 }
 
 /**
@@ -45,8 +45,13 @@ async function getItems(queryData) {
   if ( queryData.orderBy && queryData.orderBy !== "" && queryData.orderDirection && queryData.orderDirection !== "") {
     options.order = [queryData.orderBy, queryData.orderDirection];
   }
-  const data = await ItemsService.getItems(query, [], options);
-  const total = await ItemsService.countItems(query);
+
+  const promises = await Promise.all([
+    MysqlService.getData("Item", query, [], options),
+    MysqlService.countData("Item", query),
+  ]);
+  const data = promises[0];
+  const total = promises[1];
 
   return { data, total };
 }
@@ -58,7 +63,7 @@ async function updateItem(payloadData) {
   const update = Object.assign({}, payloadData);
   delete update.itemID;
 
-  const result = await ItemsService.updateItem(query, update);
+  const result = await MysqlService.updateData("Item", query, update);
   if (!result) {
     return Promise.reject({
       status: 404,

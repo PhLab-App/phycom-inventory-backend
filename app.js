@@ -35,7 +35,7 @@ const serverApp = async () => {
   // Error handling middleware
   app.use((err, req, res, next) => {
     global.winstonLogger.error(err);
-    responses.error(res, err.statusCode, err.message);
+    responses.error(res, err.status, err.message);
   });
 
   app.set("port", PORT);

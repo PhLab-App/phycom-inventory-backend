@@ -1,6 +1,6 @@
 const AuthenticationService = require("../authentication/authentication-service");
-const UsersService = require("./users-service");
 const SessionsController = require("../sessions/sessions-controller");
+const MysqlService = require("../database/mysql-service");
 
 /**
  * @param {object} payloadData
@@ -14,17 +14,33 @@ const SessionsController = require("../sessions/sessions-controller");
  * @param {number} userData.id
  */
 async function register(payloadData, userData) {
-  const userExists = await UsersService.getUserByEmail(payloadData.email);
+  // Validations
+  const query = { email: payloadData.email };
+  const userExists = await MysqlService.getFirstMatch("User", query);
   if (userExists) {
     return Promise.reject({
       status: 400,
       message: global.messages.USER_ALREADY_EXISTS,
     });
   }
-
+  // Hash password before saving to database
   payloadData.password = AuthenticationService.hashPassword(payloadData.password);
   payloadData.registered_by = userData.id;
-  return UsersService.createUser(payloadData);
+ 
+  // Find user's role
+  const roleQuery = { name: payloadData.role };
+  const role = await MysqlService.getFirstMatch("Role", roleQuery, null);
+  if (!role) {
+    return Promise.reject({ status: 400, message: "Role does not exist" });
+  }
+ 
+  // Create user in the database
+  const user = await MysqlService.createData("User", payloadData);
+ 
+  // Add user's role
+  role.addUser(user);
+
+  return user;
 }
 
 /**
@@ -34,7 +50,8 @@ async function register(payloadData, userData) {
  */
 async function login(payloadData) {
   // Find user
-  const user = await UsersService.getUserByEmail(payloadData.email);
+  const query = { email: payloadData.email };
+  const user = await MysqlService.getFirstMatch("User", query);
   if (!user) {
     return Promise.reject({
       status: 404,

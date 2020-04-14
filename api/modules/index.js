@@ -5,7 +5,7 @@ const responses = require("../utils/responses");
 const AuthenticationService = require("./authentication/authentication-service");
 
 require("./authentication")(app, responses);
-require("./roles")(app);
+require("./roles")(app, responses);
 
 app.use(async (req, res, next) => {
   try {

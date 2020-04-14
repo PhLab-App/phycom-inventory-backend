@@ -1,4 +1,4 @@
-const SessionsService = require("./sessions-service");
+const MysqlService = require("../database/mysql-service");
 
 /**
  * @param {object} payloadData
@@ -7,9 +7,14 @@ const SessionsService = require("./sessions-service");
  * @param {*} payloadData.user
  */
 async function sessionManager(payloadData) {
-  let session = await SessionsService.getSession(payloadData.ip, payloadData.userID);
+  const query = {
+    ip: payloadData.ip,
+    user_id: payloadData.userID,
+  };
+  let session = await MysqlService.getFirstMatch("Session", query, null);
   if (!session) {
-    session = await SessionsService.createSession(payloadData, payloadData.user);
+    session = await MysqlService.createData("Session", payloadData);
+    session.setUser(payloadData.user);
   }
   return session;
 }
@@ -19,7 +24,8 @@ async function sessionManager(payloadData) {
  * @param {number} payloadData.sessionID
  */
 async function expireSession(payloadData) {
-  return SessionsService.destroySession(payloadData.sessionID);
+  const query = { id: payloadData.sessionID };
+  return MysqlService.deleteData("Session", query);
 }
 
 module.exports = {

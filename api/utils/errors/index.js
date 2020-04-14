@@ -5,7 +5,7 @@ class DatabaseError extends Error {
     super(message);
     this.type = type;
     this.message = message;
-    this.statusCode = statusCode;
+    this.status = statusCode;
   }
 }
 
