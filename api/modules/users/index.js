@@ -1,8 +1,10 @@
 const UsersController = require("./users-controller");
+const { validateRole } = require("../authentication/authentication-middleware");
+const { AUTHENTICATION } = require("../../../constants");
 
 module.exports = (app, responses) => {
   app.route("/users/register")
-    .post(async(req, res, next) => {
+    .post(validateRole(AUTHENTICATION.ONLY_ADMIN), async(req, res, next) => {
       try {
         const user = await UsersController.register(req.body, req.userData);
         return responses.success(res, null, null, user);

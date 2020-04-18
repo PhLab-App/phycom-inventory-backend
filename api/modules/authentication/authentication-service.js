@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const messages = require("../../utils/messages/index");
 
 const SECRET = process.env.JWT_SECRET;
 
@@ -54,7 +55,7 @@ function verifyToken(token) {
     if (!token) {
       return Promise.reject({
         status: 401,
-        message: "Missing authentication token",
+        message: messages.MISSING_AUTH_TOKEN,
       });
     }
     return decodeToken(token);
@@ -62,7 +63,7 @@ function verifyToken(token) {
     if (error.message === "jwt malformed") {
       return Promise.reject({
         status: 403,
-        message: "Authentication token is malformed",
+        message: messages.BAD_TOKEN,
       });
     } else {
       return Promise.reject({

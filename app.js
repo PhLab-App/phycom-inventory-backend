@@ -33,7 +33,8 @@ const serverApp = async () => {
   app.use("/api", api);
 
   // Error handling middleware
-  app.use((err, req, res, next) => {
+  // eslint-disable-next-line no-unused-vars
+  app.use((err, _req, res, _next) => {
     global.winstonLogger.error(err);
     responses.error(res, err.status, err.message);
   });
