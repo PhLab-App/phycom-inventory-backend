@@ -130,6 +130,28 @@ async function getFirstMatchPopulate(modelName, query, attributes, populate) {
   });
 }
 
+/**
+ * 
+ * @param {string} modelName Name of the sequelize model
+ * @param {object} query
+ * @param {string[]} attributes
+ * @param {object} populate
+ * @param {string} populate.modelName
+ * @param {string[]} populate.attributes
+ */
+async function getDataPopulate(modelName, query, attributes, options, populate) {
+  const order = (options.order) ? [options.order] : [];
+  return databases.Mysql.db[modelName].findAll({
+    where: query,
+    order,
+    attributes,
+    include: [{
+      model: databases.Mysql.db[populate.modelName],
+      attributes: populate.attributes,
+    }],
+  });
+}
+
 module.exports = {
   createData,
   getData,
@@ -138,4 +160,5 @@ module.exports = {
   getFirstMatch,
   deleteData,
   getFirstMatchPopulate,
+  getDataPopulate,
 };

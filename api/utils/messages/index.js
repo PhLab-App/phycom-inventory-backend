@@ -6,5 +6,5 @@ module.exports = {
   SESSION_EXPIRED: "Session expired",
   MISSING_AUTH_TOKEN: "Missing authentication token",
   BAD_TOKEN: "Authentication token is malformed",
-  UNAUTHORIZED: "You are not authorized to do this opeartion",
+  UNAUTHORIZED: "You are not authorized to do this operation",
 };
