@@ -111,7 +111,7 @@ async function deleteData(modelName, query) {
 }
 
 /**
- * 
+ *
  * @param {string} modelName Name of the sequelize model
  * @param {object} query
  * @param {string[]} attributes
@@ -131,13 +131,17 @@ async function getFirstMatchPopulate(modelName, query, attributes, populate) {
 }
 
 /**
- * 
+ *
  * @param {string} modelName Name of the sequelize model
  * @param {object} query
  * @param {string[]} attributes
  * @param {object} populate
  * @param {string} populate.modelName
  * @param {string[]} populate.attributes
+ * @param {object} options
+ * @param {number} options.limit
+ * @param {number} options.skip
+ * @param {string[]} options.order
  */
 async function getDataPopulate(modelName, query, attributes, options, populate) {
   const order = (options.order) ? [options.order] : [];
@@ -149,6 +153,8 @@ async function getDataPopulate(modelName, query, attributes, options, populate) 
       model: databases.Mysql.db[populate.modelName],
       attributes: populate.attributes,
     }],
+    offset: Number(options.skip),
+    limit: Number(options.limit),
   });
 }
 

@@ -10,42 +10,41 @@ const MysqlService = require("../database/mysql-service");
  * @param {string} queryData.orderDirection Direction for the order: ASC - DESC
  */
 async function getUsers(queryData) {
-    const options = {
-      limit: queryData.limit ? queryData.limit : 12,
-      skip: queryData.skip ? queryData.skip : 0,
-    };
-    if ( queryData.orderBy && queryData.orderBy !== "" && queryData.orderDirection && queryData.orderDirection !== "") {
-      options.order = [queryData.orderBy, queryData.orderDirection];
-    }
-  
-    const query = {};
-    if (queryData.searchText && queryData.searchText !== "") {
-      query.$or = {
-        name: {
-          $like: `%${queryData.searchText}%`,
-        },
-        lastName: {
-          $like: `%${queryData.searchText}%`,
-        },
-        email: {
-          $like: `%${queryData.searchText}%`,
-        },
-      };
-    }
-  
-    const attributes = ["name", "lastName", "email", "status", "identification"];
-    const populate = { modelName: "Role", attributes: ["name"] };
-    const promises = await Promise.all([
-      MysqlService.getDataPopulate("User", query, attributes, options, populate),
-      MysqlService.countData("User", query),
-    ]);
-    const data = promises[0];
-    const total = promises[1];
-  
-    return { data, total };
+  const options = {
+    limit: queryData.limit ? queryData.limit : 12,
+    skip: queryData.skip ? queryData.skip : 0,
+  };
+  if ( queryData.orderBy && queryData.orderBy !== "" && queryData.orderDirection && queryData.orderDirection !== "") {
+    options.order = [queryData.orderBy, queryData.orderDirection];
   }
 
-  module.exports = {
-    getUsers,
-  };
-  
+  const query = {};
+  if (queryData.searchText && queryData.searchText !== "") {
+    query.$or = {
+      name: {
+        $like: `%${queryData.searchText}%`,
+      },
+      lastName: {
+        $like: `%${queryData.searchText}%`,
+      },
+      email: {
+        $like: `%${queryData.searchText}%`,
+      },
+    };
+  }
+
+  const attributes = ["id", "name", "lastName", "email", "status", "identification"];
+  const populate = { modelName: "Role", attributes: ["name"] };
+  const promises = await Promise.all([
+    MysqlService.getDataPopulate("User", query, attributes, options, populate),
+    MysqlService.countData("User", query),
+  ]);
+  const data = promises[0];
+  const total = promises[1];
+
+  return { data, total };
+}
+
+module.exports = {
+  getUsers,
+};
