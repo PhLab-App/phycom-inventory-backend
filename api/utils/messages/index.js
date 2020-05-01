@@ -7,4 +7,5 @@ module.exports = {
   MISSING_AUTH_TOKEN: "Missing authentication token",
   BAD_TOKEN: "Authentication token is malformed",
   UNAUTHORIZED: "You are not authorized to do this operation",
+  USER_NOT_ACTIVE: "User is not active",
 };

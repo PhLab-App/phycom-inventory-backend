@@ -12,5 +12,6 @@ require("./roles")(app, responses);
 require("./users")(app, responses);
 require("./items")(app, responses);
 require("./admin")(app, responses);
+require("./loans")(app, responses);
 
 module.exports = app;

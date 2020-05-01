@@ -32,8 +32,8 @@ async function getData(modelName, query, attributes, options) {
     where: query,
     order,
     attributes,
-    offset: Number(options.skip),
-    limit: Number(options.limit),
+    offset: Number(options.skip) || 0,
+    limit: Number(options.limit) || 1000,
   })
     .then(result => {
       return result;
@@ -158,6 +158,21 @@ async function getDataPopulate(modelName, query, attributes, options, populate) 
   });
 }
 
+/**
+ * Create multiple registers
+ * @param {string} modelName Name of the sequelize model
+ * @param {object[]} data Data to create
+ */
+async function bulkCreate(modelName, data) {
+  return databases.Mysql.db[modelName].bulkCreate(data)
+    .then(result => {
+      return result;
+    })
+    .catch(err => {
+      return errorService.sequelizeErrorHandler(err);
+    });
+}
+
 module.exports = {
   createData,
   getData,
@@ -167,4 +182,5 @@ module.exports = {
   deleteData,
   getFirstMatchPopulate,
   getDataPopulate,
+  bulkCreate,
 };
